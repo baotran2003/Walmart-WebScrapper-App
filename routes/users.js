@@ -20,7 +20,7 @@ router.get("/login", (req, res) => {
     res.render("./users/login");
 });
 
-router.get("/signup", (req, res) => {
+router.get("/signup",isAuthenticatedUser, (req, res) => {
     res.render("./users/signup");
 });
 
@@ -58,11 +58,11 @@ router.get("/reset/:token", (req, res) => {
         });
 });
 
-router.get("/password/change", (req, res) => {
+router.get("/password/change", isAuthenticatedUser, (req, res) => {
     res.render("./users/changepassword");
 });
 
-router.get("/users/all", (req, res) => {
+router.get("/users/all", isAuthenticatedUser, (req, res) => {
     User.find({})
         .then((users) => {
             res.render("./users/alluser", { users: users });
@@ -72,8 +72,21 @@ router.get("/users/all", (req, res) => {
         });
 });
 
+router.get("/edit/:id", isAuthenticatedUser, (req, res) => {
+    let searchQuery = { _id: req.params.id };
+
+    User.findOne(searchQuery)
+        .then((user) => {
+            res.render("./users/edituser", { user: user });
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error: " + err);
+            res.redirect("/users/all");
+        });
+});
+
 // POST routes
-router.post("/signup", (req, res) => {
+router.post("/signup", isAuthenticatedUser, (req, res) => {
     let { name, email, password } = req.body;
 
     let userData = {
@@ -111,8 +124,8 @@ router.post("/password/change", (req, res) => {
         .then((user) => {
             user.setPassword(req.body.password, (err) => {
                 user.save().then((user) => {
-                    req.flash("error_msg", "Password changed successfully.");
-                    res.redirect("/dashboard");
+                    req.flash("success_msg", "Password changed successfully.");
+                    res.redirect("/password/change");
                 });
             });
         })
@@ -316,6 +329,41 @@ router.post("/reset/:token", (req, res) => {
             }
         }
     );
+});
+
+// PUT routes
+router.put("/edit/:id", (req, res) => {
+    let searchQuery = { _id: req.params.id };
+
+    User.updateOne(searchQuery, {
+        $set: {
+            name: req.body.name,
+            email: req.body.email,
+        },
+    })
+        .then((user) => {
+            req.flash("success_msg", "User updated successfully.");
+            res.redirect("/users/all");
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error: " + err);
+            res.redirect("users/all");
+        });
+});
+
+// DELETE routes
+router.delete("/delete/user/:id", (req, res) => {
+    let searchQuery = { _id: req.params.id };
+
+    User.deleteOne(searchQuery)
+        .then((user) => {
+            req.flash("success_msg", "User deleted successfully.");
+            res.redirect("/users/all");
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error: " + err);
+            res.redirect("users/all");
+        });
 });
 
 module.exports = router;

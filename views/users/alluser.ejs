@@ -24,8 +24,12 @@
                     <td><%= user.name %></td>
                     <td><%= user.email %></td>
                     <td>
-                        <a class="btn btn-primary" href="/edit/2">Edit</a>
-                        <form style="display: inline" action="/delete/user/2?_method=DELETE" method="POST">
+                        <a class="btn btn-primary" href="/edit/<%= user._id %>">Edit</a>
+                        <form
+                            style="display: inline"
+                            action="/delete/user/<%= user._id %>?_method=DELETE"
+                            method="POST"
+                        >
                             <input type="hidden" name="_method" value="DELETE" />
                             <button style="cursor: pointer" type="submit" class="btn btn-danger ml-2">Delete</button>
                         </form>

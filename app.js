@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const methodOverride = require("method-override");
 const flash = require("connect-flash");
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
@@ -49,6 +50,9 @@ passport.deserializeUser(User.deserializeUser());
 
 // middleware flash messages
 app.use(flash());
+
+// middleware for method override
+app.use(methodOverride("_method"));
 
 // setting middleware globally
 app.use((req, res, next) => {
