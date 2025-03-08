@@ -69,6 +69,14 @@ async function scrapeData(url, page) {
 }
 
 // GET routes starts here
+router.get("/dashboard", isAuthenticatedUser, (req, res) => {
+    Product.find({})
+        .then(products => {
+            res.render("./admin/dashboard", {products: products});
+        })
+    
+});
+
 router.get("/product/new", isAuthenticatedUser, async (req, res) => {
     try {
         let url = req.query.search;
@@ -131,6 +139,28 @@ router.get("/products/instock", isAuthenticatedUser, (req, res) => {
         });
 });
 
+router.get("/products/updated", isAuthenticatedUser, (req, res) => {
+    Product.find({ updateStatus: "Updated" })
+        .then((products) => {
+            res.render("./admin/updatedproducts", { products: products });
+        })
+        .catch((err) => {
+            req.flash("Error: " + err);
+            res.redirect("/dashboard");
+        });
+});
+
+router.get("/products/notupdated", isAuthenticatedUser, (req, res) => {
+    Product.find({ updateStatus: "Not Updated" })
+        .then((products) => {
+            res.render("./admin/notupdatedproducts", { products: products });
+        })
+        .catch((err) => {
+            req.flash("Error: " + err);
+            res.redirect("/dashboard");
+        });
+});
+
 router.get("/products/outofstock", isAuthenticatedUser, (req, res) => {
     Product.find({ newStock: "Out of stock" })
         .then((products) => {
@@ -163,6 +193,8 @@ router.get("/products/backinstock", isAuthenticatedUser, (req, res) => {
             res.redirect("/dashboard");
         });
 });
+
+
 
 // POST routes start here
 router.post("/product/new", isAuthenticatedUser, (req, res) => {

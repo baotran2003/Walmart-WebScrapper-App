@@ -24,10 +24,6 @@ router.get("/signup",isAuthenticatedUser, (req, res) => {
     res.render("./users/signup");
 });
 
-router.get("/dashboard", isAuthenticatedUser, (req, res) => {
-    res.render("./users/dashboard");
-});
-
 router.get("/logout", (req, res) => {
     req.logOut((err) => {
         if (err) {

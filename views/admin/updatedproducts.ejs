@@ -1,7 +1,7 @@
 <%- include('../partials/header') -%>
 <div class="col-9">
     <div class="container p-3 w-100">
-        <h1 class="mt-5 mb-4">Not Updated Products</h1>
+        <h1 class="mt-5 mb-4">Updated Products</h1>
         <%- include('../partials/messages') -%>
         <!-- Messages -->
 
@@ -16,17 +16,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </tfoot>
                 <tbody>
-                    <!-- Products Loop -->
+                    <!-- Product Data -->
                     <% products.forEach((product) => { %>
                     <tr>
                         <td><%= product.sku %></td>
@@ -50,7 +41,6 @@
                         </td>
                     </tr>
                     <% }) %>
-                    <!-- End Products Loop -->
                 </tbody>
             </table>
         </div>

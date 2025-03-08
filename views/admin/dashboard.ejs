@@ -3,6 +3,37 @@
     <div class="container p-3">
         <h1 class="my-4">Dashboard</h1>
         <%- include('../partials/messages') -%>
+
+        <% let total = inStock = outOfStock = priceChanged = backInStock = updated = notUpdated = 0 %>
+        <% products.forEach((product) => { %>
+            <% total++; %>
+
+            <% if(product.newStock === "In stock") { %>
+                <% inStock++; %>
+            <% } %>
+
+            <% if(product.newStock === "Out of stock") { %>
+                <% outStock++; %>
+            <% } %>
+
+            <% if(product.newPrice !== product.oldPrice) { %>
+                <% priceChanged++; %>
+            <% } %>
+
+            <% if(product.oldStock === "Out of stock" && product.newStock === "In stock") { %>
+                <% backInStock++; %>
+            <% } %>
+
+            <% if(product.updateStatus === "Updated") { %>
+                <% updated++; %>
+            <% } %>
+
+            <% if(product.updateStatus === "Not Updated") { %>
+                <% notUpdated++; %>
+            <% } %>
+            
+        <% }); %>
+        
         <!-- Messages -->
 
         <div class="row">
@@ -11,7 +42,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Total Products<br />
-                            <b>10</b>
+                            <b><%= total %></b>
                         </div>
                     </div>
                 </div>
@@ -26,7 +57,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             In Stock<br />
-                            <b>5</b>
+                            <b><%= inStock %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/instock">
@@ -43,7 +74,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Out of Stock<br />
-                            <b>3</b>
+                            <b><%= outOfStock %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/outofstock">
@@ -60,7 +91,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Price Changed<br />
-                            <b>2</b>
+                            <b><%= priceChanged %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/pricechanged">
@@ -77,7 +108,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Back In Stock<br />
-                            <b>2</b>
+                            <b><%= backInStock%></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/backinstock">
@@ -100,7 +131,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Updated Products<br />
-                            <b>3</b>
+                            <b><%= updated %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/updated">
@@ -117,7 +148,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Not Updated Products<br />
-                            <b>1</b>
+                            <b><%= notUpdated %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/notupdated">
