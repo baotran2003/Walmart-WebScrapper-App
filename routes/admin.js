@@ -100,6 +100,26 @@ router.get("/product/new", isAuthenticatedUser, async (req, res) => {
     }
 });
 
+router.get("/product/search", isAuthenticatedUser, (req, res) => {
+    let userSku = req.query.sku;
+    if (userSku) {
+        Product.findOne({ sku: userSku })
+            .then((product) => {
+                if (!product) {
+                    req.flash("error_msg", "Product does not exist in the database.");
+                    return res.redirect("/product/search");
+                }
+                res.render("./admin/search", { productData: product });
+            })
+            .catch((err) => {
+                req.flash("error_msg", "Error" + err);
+                res.redirect("/product/new");
+            });
+    } else {
+        res.render("./admin/search", { productData: "" });
+    }
+});
+
 // POST routes start here
 router.post("/product/new", isAuthenticatedUser, (req, res) => {
     let { title, price, stock, url, sku } = req.body;
