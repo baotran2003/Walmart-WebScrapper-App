@@ -1,0 +1,57 @@
+<%- include('../partials/header') -%>
+<div class="col-9">
+    <div class="container p-3 w-100">
+        <h1 class="mt-5 mb-4">Not Updated Products</h1>
+        <%- include('../partials/messages') -%>
+        <!-- Messages -->
+
+        <div class="container">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <!-- Products Loop -->
+                    <tr>
+                        <td>Product SKU</td>
+                        <td>Product Title</td>
+                        <td>Product Price</td>
+                        <td>Update Status</td>
+                        <td>
+                            <a target="_blank" class="btn btn-primary p-2" href="Product URL"
+                                ><i class="fas fa-eye"></i
+                            ></a>
+                            <form
+                                style="display: inline"
+                                action="/delete/product/Product ID?_method=DELETE"
+                                method="POST"
+                            >
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <button style="cursor: pointer" type="submit" class="btn btn-danger p-2">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <!-- End Products Loop -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') -%>

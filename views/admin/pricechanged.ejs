@@ -1,0 +1,62 @@
+<%- include('../partials/header') -%>
+<div class="col-9">
+    <div class="container p-3 w-100">
+        <h1 class="mt-5 mb-4">Price Changed Products</h1>
+        <%- include('../partials/messages') -%>
+        <!-- Messages -->
+
+        <div class="container">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Old Price</th>
+                        <th>New Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Old Price</th>
+                        <th>New Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <!-- Products Loop -->
+                    <tr>
+                        <td>SKU1</td>
+                        <td>Product 1</td>
+                        <td>$10.00</td>
+                        <td>$15.00</td>
+                        <td>
+                            <a target="_blank" class="btn btn-primary p-2" href="#">View</a>
+                            <form style="display: inline" action="#" method="POST">
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <button style="cursor: pointer" type="submit" class="btn btn-danger p-2">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SKU2</td>
+                        <td>Product 2</td>
+                        <td>$20.00</td>
+                        <td>$25.00</td>
+                        <td>
+                            <a target="_blank" class="btn btn-primary p-2" href="#">View</a>
+                            <form style="display: inline" action="#" method="POST">
+                                <input type="hidden" name="_method" value="DELETE" />
+                                <button style="cursor: pointer" type="submit" class="btn btn-danger p-2">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <!-- End Products Loop -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') -%>

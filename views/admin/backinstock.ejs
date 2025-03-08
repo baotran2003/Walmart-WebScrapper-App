@@ -1,0 +1,33 @@
+<%- include('../partials/header') -%>
+<div class="col-9">
+    <div class="container p-3 w-100">
+        <h1 class="mt-5 mb-4">Back In Stock Products</h1>
+        <%- include('../partials/messages') -%>
+        <div class="container">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <!-- Product Rows Here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<%- include('../partials/footer') -%>
