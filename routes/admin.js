@@ -15,17 +15,17 @@ function isAuthenticatedUser(req, res, next) {
     res.redirect("/login");
 }
 
+let browser;
+
 // Scrape function
 async function scrapeData(url, page) {
     try {
-        await page.goto(url, { waitUntil: load, timeout: 0 });
+        await page.goto(url, { waitUntil: "load", timeout: 0 });
         const html = await page.evaluate(() => document.body.innerHTML);
         const $ = await cheerio.load(html);
 
         let title = $("h1").text();
-        let price = $("span[itemprop='price']").text();
-
-        // title, price, sellerName, outOfStock, checkStock, url
+        let price = $("span[itemprop='price']").first().text();
 
         let seller = "";
         let checkSeller = $("a[link-identifier='item']");
@@ -58,14 +58,45 @@ async function scrapeData(url, page) {
         }
 
         return {
+            url,
             title,
             price,
             stock,
-            url,
         };
     } catch (error) {
         console.log("Error: " + error);
     }
 }
+
+router.get("/product/new", isAuthenticatedUser, async (req, res) => {
+    try {
+        let url = req.query.search;
+        if (url) {
+            browser = await puppeteer.launch({ headless: false });
+            const page = await browser.newPage();
+            let result = await scrapeData(url, page);
+
+            let productData = {
+                title: result.title,
+                price: result.price,
+                stock: result.stock,
+                productUrl: result.url,
+            };
+            res.render("./admin/newproduct", { productData: productData });
+            browser.close();
+        } else {
+            let productData = {
+                title: "",
+                price: "",
+                stock: "",
+                productUrl: "",
+            };
+            res.render("./admin/newproduct", { productData: productData });
+        }
+    } catch (error) {
+        req.flash("error_msg", "Error: " + error);
+        res.redirect("/product/new");
+    }
+});
 
 module.exports = router;
