@@ -120,6 +120,28 @@ router.get("/product/search", isAuthenticatedUser, (req, res) => {
     }
 });
 
+router.get("/products/instock", isAuthenticatedUser, (req, res) => {
+    Product.find({ newStock: "In stock" })
+        .then((products) => {
+            res.render("./admin/instock", { products: products });
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error: " + err);
+            res.redirect("/dashboard");
+        });
+});
+
+router.get("/products/outofstock", isAuthenticatedUser, (req, res) => {
+    Product.find({ newStock: "Out of stock" })
+        .then((products) => {
+            res.render("./admin/outofstock", { products: products });
+        })
+        .catch((err) => {
+            req.flash("Error: " + err);
+            res.redirect("/dashboard");
+        });
+});
+
 // POST routes start here
 router.post("/product/new", isAuthenticatedUser, (req, res) => {
     let { title, price, stock, url, sku } = req.body;

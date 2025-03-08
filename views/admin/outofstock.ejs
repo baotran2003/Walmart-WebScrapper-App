@@ -27,32 +27,21 @@
                 </tfoot>
                 <tbody>
                     <!-- Products Loop -->
+                    <% products.forEach((product) => { %>
                     <tr class="in-stock">
-                        <td>SKU1</td>
-                        <td>Product 1</td>
-                        <td>$10.00</td>
-                        <td>Out of stock</td>
+                        <td><%= product.sku %></td>
+                        <td><%= product.title %></td>
+                        <td><%= product.newPrice %></td>
+                        <td><%= product.newStock %></td>
                         <td>
-                            <a target="_blank" class="btn btn-primary p-2" href="#">View</a>
+                            <a target="_blank" class="btn btn-primary p-2" href="<%product.url%>">View</a>
                             <form style="display: inline" action="#" method="POST">
                                 <input type="hidden" name="_method" value="DELETE" />
                                 <button style="cursor: pointer" type="submit" class="btn btn-danger p-2">Delete</button>
                             </form>
                         </td>
                     </tr>
-                    <tr>
-                        <td>SKU2</td>
-                        <td>Product 2</td>
-                        <td>$20.00</td>
-                        <td>In stock</td>
-                        <td>
-                            <a target="_blank" class="btn btn-primary p-2" href="#">View</a>
-                            <form style="display: inline" action="#" method="POST">
-                                <input type="hidden" name="_method" value="DELETE" />
-                                <button style="cursor: pointer" type="submit" class="btn btn-danger p-2">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+                    <% }) %>
                     <!-- End Products Loop -->
                 </tbody>
             </table>
