@@ -10,8 +10,9 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 
-// requiring user route
+// requiring user and admin route
 const userRoutes = require("./routes/users");
+const adminRoutes = require("./routes/admin");
 
 // Requiring user model
 const User = require("./models/usermodel");
@@ -64,6 +65,7 @@ app.use((req, res, next) => {
 });
 
 app.use(userRoutes);
+app.use(adminRoutes);
 
 const port = process.env.PORT;
 app.listen(port, () => {
