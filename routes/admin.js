@@ -142,6 +142,17 @@ router.get("/products/outofstock", isAuthenticatedUser, (req, res) => {
         });
 });
 
+router.get("/products/pricechanged", isAuthenticatedUser, (req, res) => {
+    Product.find({})
+        .then((products) => {
+            res.render("./admin/pricechanged", { products: products });
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error:" + err);
+            res.redirect("/dashboard");
+        });
+});
+
 // POST routes start here
 router.post("/product/new", isAuthenticatedUser, (req, res) => {
     let { title, price, stock, url, sku } = req.body;
