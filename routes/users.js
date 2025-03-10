@@ -27,7 +27,7 @@ router.get("/signup", (req, res) => {
 router.get("/logout", (req, res) => {
     req.logOut((err) => {
         if (err) {
-            console.log(err);
+            req.flash("error_msg", "Error: " + err);
             return res.redirect("/");
         }
         req.flash("success_msg", "You have been logged out.");
@@ -64,7 +64,8 @@ router.get("/users/all", isAuthenticatedUser, (req, res) => {
             res.render("./users/alluser", { users: users });
         })
         .catch((err) => {
-            console.log(err);
+            req.flash("error_msg", "Error: " +err);
+            res.redirect("/user/all")
         });
 });
 
@@ -176,10 +177,10 @@ router.post("/forgot", (req, res, next) => {
                     greetingTimeout: 5000, // Thời gian chờ chào hỏi (5 giây)
                 });
 
-                console.log("SMTP Config:", {
-                    user: process.env.GMAIL_EMAIL,
-                    pass: process.env.GMAIL_PASSWORD,
-                });
+                // console.log("SMTP Config:", {
+                //     user: process.env.GMAIL_EMAIL,
+                //     pass: process.env.GMAIL_PASSWORD,
+                // });
 
                 let mailOptions = {
                     to: user.email, // Địa chỉ nhận (email của user)
@@ -195,16 +196,12 @@ router.post("/forgot", (req, res, next) => {
                         "If you did not request this, please ignore this email.",
                 };
 
-                console.log("Mail Options:", mailOptions); // Log cấu hình email
-
                 smtpTransport.sendMail(mailOptions, (err, info) => {
                     if (err) {
                         console.error("Send mail error:", err.message, "Full error:", err);
                         req.flash("error_msg", "Failed to send email: " + err.message);
                         return res.redirect("/forgot");
                     }
-                    console.log("Email sent successfully. Response:", info.response);
-                    console.log("Email sent to:", user.email); // Log email nhận
                     req.flash("success_msg", "Email sent with further instructions. Please check that.");
                     res.redirect("/forgot");
                 });
@@ -225,16 +222,12 @@ router.post("/reset/:token", (req, res) => {
         [
             // Bước 1: Tìm user, kiểm tra token, và đặt mật khẩu mới
             (done) => {
-                console.log("Checking token from URL:", req.params.token);
+                // console.log("Checking token from URL:", req.params.token);
                 User.findOne({
                     resetPasswordToken: req.params.token,
                     resetPasswordExpires: { $gt: Date.now() },
                 })
                     .then((user) => {
-                        console.log("Current time:", new Date(), "Query result:", user);
-                        console.log("Current time:", new Date());
-                        console.log("Token from DB:", user?.resetPasswordToken);
-                        console.log("Expiry time from DB:", user?.resetPasswordExpires);
                         if (!user) {
                             req.flash("error_msg", "Password reset token is invalid or has expired.");
                             return res.redirect("/forgot");
@@ -264,7 +257,7 @@ router.post("/reset/:token", (req, res) => {
                                         console.error("Error logging in:", err);
                                         return done(err);
                                     }
-                                    console.log("Password reset and user logged in:", user.email);
+                                    // console.log("Password reset and user logged in:", user.email);
                                     done(null, user);
                                 });
                             });
@@ -310,7 +303,7 @@ router.post("/reset/:token", (req, res) => {
                         console.error("Send mail error:", err.message);
                         req.flash("error_msg", "Failed to send confirmation email.");
                     } else {
-                        console.log("Email sent successfully to:", user.email);
+                        // console.log("Email sent successfully to:", user.email);
                         req.flash("success_msg", "Your password has been changed successfully.");
                     }
                     res.redirect("/login");

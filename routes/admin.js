@@ -70,9 +70,8 @@ async function scrapeData(url, page) {
 
 // GET routes starts here
 router.get("/", (req, res) => {
-    res.render('index');
-    
-})
+    res.render("index");
+});
 
 router.get("/dashboard", isAuthenticatedUser, (req, res) => {
     Product.find({}).then((products) => {
@@ -84,7 +83,7 @@ router.get("/product/new", isAuthenticatedUser, async (req, res) => {
     try {
         let url = req.query.search;
         if (url) {
-            browser = await puppeteer.launch({ headless: false });
+            browser = await puppeteer.launch({ args: ["--no-sandbox"] });
             const page = await browser.newPage();
             let result = await scrapeData(url, page);
 
@@ -250,10 +249,10 @@ router.post("/update", isAuthenticatedUser, async (req, res) => {
                                 updateStatus: "Not Updated",
                             },
                         }
-                    ).then(products => {})
+                    ).then((products) => {});
                 }
 
-                browser = await puppeteer.launch({ headless: false });
+                browser = await puppeteer.launch({ args: ["--no-sandbox"] });
                 const page = await browser.newPage();
 
                 for (let i = 0; i < products.length; i++) {
@@ -270,7 +269,7 @@ router.post("/update", isAuthenticatedUser, async (req, res) => {
                         }
                     ).then((products) => {});
                 }
-                
+
                 browser.close();
             })
             .catch((err) => {
@@ -299,7 +298,7 @@ router.delete("/delete/product/:id", isAuthenticatedUser, (req, res) => {
 });
 
 router.get("*", (req, res) => {
-    res.render("./admin/notfound")
-})
+    res.render("./admin/notfound");
+});
 
 module.exports = router;
