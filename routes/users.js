@@ -20,7 +20,7 @@ router.get("/login", (req, res) => {
     res.render("./users/login");
 });
 
-router.get("/signup",isAuthenticatedUser, (req, res) => {
+router.get("/signup", (req, res) => {
     res.render("./users/signup");
 });
 
@@ -82,7 +82,7 @@ router.get("/edit/:id", isAuthenticatedUser, (req, res) => {
 });
 
 // POST routes
-router.post("/signup", isAuthenticatedUser, (req, res) => {
+router.post("/signup", (req, res) => {
     let { name, email, password } = req.body;
 
     let userData = {
