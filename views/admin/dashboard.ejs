@@ -4,36 +4,45 @@
         <h1 class="my-4">Dashboard</h1>
         <%- include('../partials/messages') -%>
 
-        <% let total = inStock = outOfStock = priceChanged = backInStock = updated = notUpdated = 0 %>
-        <% products.forEach((product) => { %>
-            <% total++; %>
+        <!-- Khai báo và khởi tạo biến một lần duy nhất -->
+        <% 
+            let total = 0;
+            let inStock = 0;
+            let outOfStock = 0;
+            let priceChanged = 0;
+            let backInStock = 0;
+            let updated = 0;
+            let notUpdated = 0;
 
-            <% if(product.newStock === "In stock") { %>
-                <% inStock++; %>
-            <% } %>
+            products.forEach((product) => {
+                total++;
 
-            <% if(product.newStock === "Out of stock") { %>
-                <% outOfStock++; %>
-            <% } %>
+                if (product.newStock === "In stock") {
+                    inStock++;
+                }
 
-            <% if(product.newPrice !== product.oldPrice) { %>
-                <% priceChanged++; %>
-            <% } %>
+                if (product.newStock === "Out of stock") {
+                    outOfStock++;
+                }
 
-            <% if(product.oldStock === "Out of stock" && product.newStock === "In stock") { %>
-                <% backInStock++; %>
-            <% } %>
+                if (product.newPrice !== product.oldPrice) {
+                    priceChanged++;
+                }
 
-            <% if(product.updateStatus === "Updated") { %>
-                <% updated++; %>
-            <% } %>
+                if (product.oldStock === "Out of stock" && product.newStock === "In stock") {
+                    backInStock++;
+                }
 
-            <% if(product.updateStatus === "Not Updated") { %>
-                <% notUpdated++; %>
-            <% } %>
-            
-        <% }); %>
-        
+                if (product.updateStatus === "Updated") {
+                    updated++;
+                }
+
+                if (product.updateStatus === "Not Updated") {
+                    notUpdated++;
+                }
+            });
+        %>
+
         <!-- Messages -->
 
         <div class="row">
@@ -108,7 +117,7 @@
                     <div class="card-body">
                         <div class="text-center card-font-size">
                             Back In Stock<br />
-                            <b><%= backInStock%></b>
+                            <b><%= backInStock %></b>
                         </div>
                     </div>
                     <a class="card-footer text-white clearfix small z-1" href="/products/backinstock">

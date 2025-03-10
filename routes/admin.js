@@ -70,11 +70,9 @@ async function scrapeData(url, page) {
 
 // GET routes starts here
 router.get("/dashboard", isAuthenticatedUser, (req, res) => {
-    Product.find({})
-        .then(products => {
-            res.render("./admin/dashboard", {products: products});
-        })
-    
+    Product.find({}).then((products) => {
+        res.render("./admin/dashboard", { products: products });
+    });
 });
 
 router.get("/product/new", isAuthenticatedUser, async (req, res) => {
@@ -161,6 +159,10 @@ router.get("/products/notupdated", isAuthenticatedUser, (req, res) => {
         });
 });
 
+router.get("/update", isAuthenticatedUser, (req, res) => {
+    res.render("./admin/update", { message: "" });
+});
+
 router.get("/products/outofstock", isAuthenticatedUser, (req, res) => {
     Product.find({ newStock: "Out of stock" })
         .then((products) => {
@@ -194,8 +196,6 @@ router.get("/products/backinstock", isAuthenticatedUser, (req, res) => {
         });
 });
 
-
-
 // POST routes start here
 router.post("/product/new", isAuthenticatedUser, (req, res) => {
     let { title, price, stock, url, sku } = req.body;
@@ -228,6 +228,69 @@ router.post("/product/new", isAuthenticatedUser, (req, res) => {
                 res.redirect("/product/new");
             });
     });
+});
+
+router.post("/update", isAuthenticatedUser, async (req, res) => {
+    try {
+        res.render("./admin/update", { message: "update started." });
+        Product.find({})
+            .then(async (products) => {
+                for (let i = 0; i < products.length; i++) {
+                    Product.updateOne(
+                        { url: products[i].url },
+                        {
+                            $set: {
+                                oldPrice: products[i].newPrice,
+                                oldStock: products[i].newStock,
+                                updateStatus: "Not Updated",
+                            },
+                        }
+                    ).then(products => {})
+                }
+
+                browser = await puppeteer.launch({ headless: false });
+                const page = await browser.newPage();
+
+                for (let i = 0; i < products.length; i++) {
+                    let result = await scrapeData(products[i].url, page);
+                    Product.updateOne(
+                        { url: products[i].url },
+                        {
+                            $set: {
+                                title: result.title,
+                                newPrice: result.price,
+                                newStock: result.stock,
+                                updateStatus: "Updated",
+                            },
+                        }
+                    ).then((products) => {});
+                }
+                
+                browser.close();
+            })
+            .catch((err) => {
+                req.flash("error_msg", "Error: " + err);
+                res.redirect("/dashboard");
+            });
+    } catch (err) {
+        req.flash("error_msg", "Error: " + err);
+        res.redirect("/dashboard");
+    }
+});
+
+//DELETE router
+router.delete("/delete/product/:id", isAuthenticatedUser, (req, res) => {
+    let searchQuery = { _id: req.params.id };
+
+    Product.deleteOne(searchQuery)
+        .then((product) => {
+            req.flash("success_msg", "Product deleted successfully.");
+            res.redirect("/dashboard");
+        })
+        .catch((err) => {
+            req.flash("error_msg", "Error: " + err);
+            res.redirect("/dashboard");
+        });
 });
 
 module.exports = router;
