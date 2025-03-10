@@ -69,6 +69,11 @@ async function scrapeData(url, page) {
 }
 
 // GET routes starts here
+router.get("/", (req, res) => {
+    res.render('index');
+    
+})
+
 router.get("/dashboard", isAuthenticatedUser, (req, res) => {
     Product.find({}).then((products) => {
         res.render("./admin/dashboard", { products: products });
@@ -292,5 +297,9 @@ router.delete("/delete/product/:id", isAuthenticatedUser, (req, res) => {
             res.redirect("/dashboard");
         });
 });
+
+router.get("*", (req, res) => {
+    res.render("./admin/notfound")
+})
 
 module.exports = router;
