@@ -177,10 +177,10 @@ router.post("/forgot", (req, res, next) => {
                     greetingTimeout: 5000, // Thời gian chờ chào hỏi (5 giây)
                 });
 
-                // console.log("SMTP Config:", {
-                //     user: process.env.GMAIL_EMAIL,
-                //     pass: process.env.GMAIL_PASSWORD,
-                // });
+                console.log("SMTP Config:", {
+                    user: process.env.GMAIL_EMAIL,
+                    pass: process.env.GMAIL_PASSWORD,
+                });
 
                 let mailOptions = {
                     to: user.email, // Địa chỉ nhận (email của user)
