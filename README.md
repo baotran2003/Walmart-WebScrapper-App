@@ -19,3 +19,10 @@ The Walmart Web Scraper App is a Node.js-based web application designed to scrap
 - **Authentication**: Passport.js (local strategy)
 - **Email Service**: Nodemailer (Gmail SMTP)
 - **Middleware**: Custom authentication middleware
+
+## Usage
+- **Signup/Login: Register an account or log in to access the dashboard.
+- **Add Product: Enter a Walmart product URL to scrape and save data.
+- **Update Products: Trigger bulk updates to refresh product information.
+- **View Dashboard: Monitor in-stock, out-of-stock, price-changed, or back-in-stock products.
+- **Admin Features: Manage users and products (requires authentication).
