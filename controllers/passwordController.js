@@ -1,6 +1,13 @@
-const crypto = require("crypto");
+/*
+crypto: Tạo chuỗi ngẫu nhiên (token) để xác thực link đặt lại mật khẩu.
+async: Thư viện hỗ trợ chạy các tác vụ bất đồng bộ theo thứ tự (waterfall).
+nodemailer: Gửi email (link đặt lại mật khẩu, xác nhận đổi mật khẩu).
+User model: Giả định sử dụng passport-local-mongoose để quản lý người dùng, hỗ trợ các hàm như setPassword.
+*/
+
+const crypto = require("crypto"); // create random token (use to reset password)
 const async = require("async");
-const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer"); // gửi email (dùng để gửi link đặt lại mật khẩu)
 const User = require("../models/usermodel");
 
 module.exports = {
@@ -11,12 +18,14 @@ module.exports = {
     postForgotPassword: (req, res, next) => {
         async.waterfall(
             [
+                // create random token
                 (done) => {
                     crypto.randomBytes(30, (err, buf) => {
                         let token = buf.toString("hex");
                         done(err, token);
                     });
                 },
+                // Tìm người dùng và lưu token đặt lại mật khẩu
                 (token, done) => {
                     User.findOne({ email: req.body.email })
                         .then((user) => {
@@ -24,7 +33,10 @@ module.exports = {
                                 req.flash("error_msg", "User does not exist with this email.");
                                 return res.redirect("/forgot");
                             }
+                            // Lưu token đặt lại mật khẩu vào user
                             user.resetPasswordToken = token;
+
+                            // Đặt thời gian hết hạn cho token (30 phút
                             user.resetPasswordExpires = Date.now() + 1800000;
                             user.save()
                                 .then(() => done(null, token, user))
@@ -35,20 +47,23 @@ module.exports = {
                             res.redirect("/forgot");
                         });
                 },
+                // Send email chứa link đặt lại mật khẩu
                 (token, user) => {
+                    // Create transporter để send email -> Gmail
                     let smtpTransport = nodemailer.createTransport({
                         service: "Gmail",
                         host: "smtp.gmail.com",
-                        port: 587,
+                        port: 587, // port cho TLS
                         secure: false,
                         auth: {
                             user: process.env.GMAIL_EMAIL,
                             pass: process.env.GMAIL_PASSWORD,
                         },
-                        connectionTimeout: 10000,
-                        greetingTimeout: 5000,
+                        connectionTimeout: 10000, // Connect timeOut (10s)
+                        greetingTimeout: 5000, // SMTP response timeOut(5s)
                     });
 
+                    // config mail sẽ gửi
                     let mailOptions = {
                         to: user.email,
                         from: process.env.GMAIL_EMAIL,
@@ -83,8 +98,13 @@ module.exports = {
         );
     },
 
+    // Func xử lý GET request cho trang reset password (dựa trên token)
     getResetPassword: (req, res) => {
-        User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+        // Find user có token hop le và token chưa hết hạn
+        User.findOne({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: { $gt: Date.now() },
+        })
             .then((user) => {
                 if (!user) {
                     req.flash("error_msg", "Password reset token in invalid or has been expired.");
@@ -117,6 +137,7 @@ module.exports = {
                                 return res.redirect(`/reset/${req.params.token}`);
                             }
 
+                            // update new passord for user
                             user.setPassword(req.body.password, (err) => {
                                 if (err) {
                                     console.error("Error setting password:", err);
@@ -131,6 +152,7 @@ module.exports = {
                                         req.flash("error_msg", "Error saving user: " + err);
                                         return res.redirect(`/reset/${req.params.token}`);
                                     }
+                                    // // Đăng nhập tự động cho user after reset password
                                     req.login(user, (err) => {
                                         if (err) {
                                             console.error("Error logging in:", err);
@@ -147,6 +169,7 @@ module.exports = {
                             return res.redirect("/forgot");
                         });
                 },
+                // Bước 2: Send email xác nhận đổi mật khẩu
                 (user) => {
                     if (!user || !user.email) {
                         console.error("No valid user or email for sending confirmation:", user);
@@ -154,6 +177,7 @@ module.exports = {
                         return res.redirect("/login");
                     }
 
+                    // Create transporter để send email -> Gmail
                     let smtpTransport = nodemailer.createTransport({
                         service: "Gmail",
                         auth: {

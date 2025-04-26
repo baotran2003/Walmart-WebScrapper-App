@@ -1,5 +1,5 @@
 const Product = require("../models/product");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer"); // Tự động hóa trình duyệt để thu thập dữ liệu từ các URL sản phẩm.
 const scraper = require("../utils/scraper");
 
 module.exports = {
@@ -15,6 +15,8 @@ module.exports = {
             if (url) {
                 let browser = await puppeteer.launch({ headless: false });
                 const page = await browser.newPage();
+
+                // Call func scrapeData để collect data từ URL
                 let result = await scraper.scrapeData(url, page);
 
                 let productData = {

@@ -1,10 +1,14 @@
-const cheerio = require("cheerio");
+const cheerio = require("cheerio"); // cherio parse, truy van DOM <=> JQuery
 
 module.exports = {
     scrapeData: async function (url, page) {
         try {
             await page.goto(url, { waitUntil: "load", timeout: 0 });
+
+            // get all html trong body
             const html = await page.evaluate(() => document.body.innerHTML);
+
+            // load html -> cherio de use Jquery get data
             const $ = await cheerio.load(html);
 
             let title = $("h1").text();
